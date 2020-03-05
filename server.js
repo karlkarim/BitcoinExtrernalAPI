@@ -11,11 +11,11 @@ app.get("/", function(req,res){
 
 app.post("/",function(req,res){
     let currency = req.body.currency;
-    let url = ` https://api.coindesk.com/v1/bpi/currentprice/${currency}.json`;
+    let url = `https://api.coindesk.com/v1/bpi/currentprice/${currency}.json`;
     request(url, function(error,response,body){
         console.log("Server status code", response.statusCode);
         let data = JSON.parse(response.body);
-    
+        let input = req.body.input;
         let price;
     
         if(currency==="EUR"){
@@ -25,6 +25,21 @@ app.post("/",function(req,res){
             price = data.bpi.USD.rate_float;
             console.log(price);
         }
+
+        let answer = (input * price).toFixed(2)
+
+		if (input === "" | input === null) {
+
+			res.send('Must have a value')
+
+		} else {
+
+			res.send(`Your ${input} bitcoins are worth ${answer}${currency}.`)
+
+		}
+
+
+
     });
 
 
@@ -34,5 +49,5 @@ app.post("/",function(req,res){
 
 app.listen(3000, function(){
 
-    console.log("sever is running on port 3000");
+    console.log("Server is running on port 3000");
 });
